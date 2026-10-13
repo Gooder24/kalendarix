@@ -1,0 +1,38 @@
+# Maintainer: esyst
+#
+# Builds Kalendarix from the working tree this file sits in:
+#   cd packaging/arch && makepkg -si
+pkgname=kalendarix
+pkgver=2.0.0
+pkgrel=1
+pkgdesc='Local-first desktop calendar'
+arch=(x86_64)
+url='https://github.com/Gooder24/kalendarix'
+license=(MIT)
+depends=(webkit2gtk-4.1 gtk3)
+makedepends=(rust nodejs npm)
+optdepends=('gammu: push an exported calendar to a feature phone')
+
+_root() { realpath "$startdir/../.."; }
+
+build() {
+  cd "$(_root)"
+  npm ci
+  npm run tauri build -- --no-bundle
+}
+
+check() {
+  cd "$(_root)"
+  npm run check
+  (cd src-tauri && cargo test --release)
+}
+
+package() {
+  cd "$(_root)"
+  install -Dm755 src-tauri/target/release/kalendarix "$pkgdir/usr/bin/kalendarix"
+  install -Dm644 packaging/kalendarix.desktop "$pkgdir/usr/share/applications/kalendarix.desktop"
+  install -Dm644 assets/kalendarix.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/kalendarix.svg"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -d "$pkgdir/usr/share/kalendarix"
+  cp -r gammu "$pkgdir/usr/share/kalendarix/gammu"
+}

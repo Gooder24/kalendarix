@@ -1,0 +1,38 @@
+[package]
+name = "kalendarix"
+version = "2.0.0"
+description = "Local-first desktop calendar"
+authors = ["esyst"]
+license = "MIT"
+edition = "2021"
+rust-version = "1.80"
+
+[lib]
+name = "kalendarix_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-single-instance = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+ureq = "3"
+
+# Already in the tree through tauri; named here to reach the font settings (text.rs).
+[target.'cfg(target_os = "linux")'.dependencies]
+gtk = "0.18"
+
+[dev-dependencies]
+tempfile = "3"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

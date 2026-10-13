@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  interface:
+    name: Interface (types, lint, tests, browsers)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npx vite build
+
+      # The interface in real browsers, against the stand-in backend: Chromium, and
+      # WebKit, which is the engine the app runs on under Linux.
+      - run: npx playwright-core install --with-deps chromium webkit
+      - name: Browser checks
+        run: |
+          npx vite preview --host 127.0.0.1 --port 1420 --strictPort &
+          for i in $(seq 30); do curl -sf http://127.0.0.1:1420/ > /dev/null && break; sleep 1; done
+          KX_SHOTS=shots/chromium npm run e2e
+          KX_SHOTS=shots/webkit KX_BROWSER=webkit npm run e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: shots
+          if-no-files-found: ignore
+
+  shell:
+    name: Shell (fmt, clippy, tests, build)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: System libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential libssl-dev librsvg2-dev libxdo-dev
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - run: npm ci
+      # The shell embeds the built interface, so it has to exist before anything compiles.
+      - run: npx vite build
+      - run: cargo fmt --check
+        working-directory: src-tauri
+      - run: cargo clippy --all-targets -- -D warnings
+        working-directory: src-tauri
+      - run: cargo test
+        working-directory: src-tauri
+      - run: npm run tauri build -- --no-bundle
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kalendarix-linux-x86_64
+          path: src-tauri/target/release/kalendarix

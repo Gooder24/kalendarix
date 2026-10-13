@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Kalendarix
+Comment=Kalendár, udalosti a export do telefónu
+Comment[en]=Calendar, events and export to a phone
+Exec=kalendarix
+Icon=kalendarix
+Terminal=false
+Categories=Office;Calendar;
+StartupWMClass=kalendarix

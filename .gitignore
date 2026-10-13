@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+src-tauri/target/
+src-tauri/gen/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets / local config: never commit
+.env
+.env.*
+auth.json
+*.pem
+*.key
+*credentials*
+
+# User exports / generated calendar files
+*.vcs
+
+# Editor
+.vscode/
+.idea/
+
+# Screenshots from npm run e2e
+e2e/shots/

@@ -1,0 +1,8 @@
+# Normalize line endings so cross-platform helper scripts keep working.
+# Shell scripts MUST stay LF — a CRLF shebang fails on macOS/Linux with
+# "bad interpreter: /usr/bin/env bash^M".
+*.sh    text eol=lf
+# Windows batch files want CRLF.
+*.bat   text eol=crlf
+# Default: let Git normalize text, leave binaries untouched.
+*       text=auto
