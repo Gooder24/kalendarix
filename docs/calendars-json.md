@@ -129,7 +129,7 @@ An event can have a second colour next to the first. It is taken from, in order:
 3. when the calendar has `autoAccent: true`, a colour picked for the title from
    a fixed palette, so every title has its own.
 
-A title is normalised by dropping a leading `Zrušené:`, diacritics and case
+A title is normalised by dropping a leading `Zrušené:` ("Cancelled:"), diacritics and case
 (`"Zrušené: Matematika"` → `matematika`).
 
 ## For a program that syncs events into the file

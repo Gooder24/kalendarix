@@ -1,25 +1,25 @@
-# Nokia Export — Návod na gammu
+# Nokia Export — gammu guide
 
-Kalendarix vie exportovať tvoje udalosti do `.vcs` súboru (vCalendar 1.0),
-ktorému rozumejú staršie Nokia telefóny (napr. **Nokia C2-01**). Tento návod
-popisuje ako súbor dostať do telefónu pomocou nástroja **gammu**.
+Kalendarix can export your events to a `.vcs` file (vCalendar 1.0),
+which older Nokia phones understand (e.g. **Nokia C2-01**). This guide
+describes how to get the file into the phone using the **gammu** tool.
 
-## Čo potrebuješ
+## What you need
 
-- Nokia C2-01 s USB káblom
-- [gammu](https://wammu.eu/gammu/) (stiahni na gammu.org)
-- Tento `.bat` skript (ulož ako `nokia-sync.bat`)
+- A Nokia C2-01 with a USB cable
+- [gammu](https://wammu.eu/gammu/) (download it from gammu.org)
+- This `.bat` script (save it as `nokia-sync.bat`)
 
-## Inštalácia gammu
+## Installing gammu
 
-1. Stiahni `gammu-setup.exe` z [gammu.org/install/win](https://wammu.eu/download/)
-2. Nainštaluj do `C:\Program Files\Gammu\`
-3. Zapoj Nokiu, vyber **„PC Suite"** na telefóne
-4. Spusti: `gammu-detect` → skopíruj výstup do `.gammurc`
+1. Download `gammu-setup.exe` from [gammu.org/install/win](https://wammu.eu/download/)
+2. Install it to `C:\Program Files\Gammu\`
+3. Plug in the Nokia, choose **"PC Suite"** on the phone
+4. Run: `gammu-detect` → copy the output into `.gammurc`
 
-## .bat skript
+## .bat script
 
-Vytvor súbor `nokia-sync.bat`:
+Create a file `nokia-sync.bat`:
 
 ```bat
 @echo off
@@ -33,14 +33,14 @@ echo Hotovo!
 pause
 ```
 
-## Týždenná rutina
+## Weekly routine
 
-1. V Kalendarixe: **Nastavenia → Export do telefónu** → ulož ako `nokia-export.vcs` na Plochu
-2. Zapoj Nokiu cez USB
-3. Dvojklik na `nokia-sync.bat`
-4. Hotovo — udalosti sú v Nokia Calendar
+1. In Kalendarix: **Settings → Export to a phone** (*Nastavenia → Export do telefónu* in the Slovak interface) → save as `nokia-export.vcs` on the Desktop
+2. Plug the Nokia in over USB
+3. Double-click `nokia-sync.bat`
+4. Done — the events are in Nokia Calendar
 
-## Problémy
+## Problems
 
-- **„Telefon nenajdeny"** → skontroluj USB kábel a režim PC Suite
-- **Udalosti sa nezobrazia** → skontroluj či má Nokia nastavený správny dátum a čas
+- **"Telefon nenajdeny"** ("phone not found") → check the USB cable and PC Suite mode
+- **The events do not show up** → check that the Nokia has the correct date and time set

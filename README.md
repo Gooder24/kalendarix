@@ -32,7 +32,7 @@ machine, shows them clearly, and can hand them to a feature phone over a cable.
   tells itself apart.
 - **Details worth opening.** What an event is and which kind, when and how far
   off, where, with whom, what comes before and after it. Lines such as
-  `Učiteľ: …` in a feed's description become labelled rows.
+  `Učiteľ: …` ("Teacher: …") in a feed's description become labelled rows.
 - **Lives with other programs.** `calendars.json` can be shared with a
   timetable sync or a calendar in the desktop's panel: Kalendarix picks up
   their changes while open and never saves over them. The layout is written
