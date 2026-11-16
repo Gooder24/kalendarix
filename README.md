@@ -20,7 +20,34 @@ machine, shows them clearly, and can hand them to a feature phone over a cable.
 
 <sub>Made-up sample data, in the pixel look (and the built-in dark theme, bottom right).</sub>
 
-## What it does
+## Requirements
+
+- [Node.js](https://nodejs.org) 24 or newer, for the interface and the checks.
+- For the desktop app only: Rust (stable), and on Linux the WebKitGTK 4.1
+  development files:
+
+  ```bash
+  # Arch
+  sudo pacman -S --needed webkit2gtk-4.1 base-devel
+  # Debian, Ubuntu
+  sudo apt install libwebkit2gtk-4.1-dev build-essential libssl-dev librsvg2-dev libxdo-dev
+  ```
+
+- At run time the desktop app needs `webkit2gtk-4.1` and nothing else.
+
+## Quick start
+
+```bash
+npm install && npm run dev
+```
+
+Then open http://127.0.0.1:1420 in a browser. This runs the interface alone, with
+sample data. For the desktop app, see [Requirements](#requirements) and the
+desktop app section under [Usage](#usage).
+
+## Usage
+
+### What it does
 
 - **Year, month, week and day.** An event that covers several days is one bar
   across them. Clicking a day opens that day: its hours, and everything in it as
@@ -48,9 +75,9 @@ machine, shows them clearly, and can hand them to a feature phone over a cable.
   take, as a `.vcs` file pushed over USB with [gammu](gammu/README.md).
 - **Slovak and English.**
 
-## Keys
+### Keys
 
-| Key | |
+| Key | What it does |
 |---|---|
 | `D` `W` `M` `Y` | day, week, month, year |
 | `←` `→` | back, forward |
@@ -62,7 +89,7 @@ machine, shows them clearly, and can hand them to a feature phone over a cable.
 In the week and day views a double-click on an empty spot creates an event
 there, and an event can be dragged to another time or day.
 
-## Build and run
+### Desktop app
 
 Kalendarix is a [Tauri](https://tauri.app) app: a small Rust shell
 (`src-tauri/`) around an interface written in TypeScript (`src/`).
@@ -72,16 +99,6 @@ The tools that read the TypeScript are Rust as well: it is type-checked by
 compiler, bundled by Vite (Rolldown and Oxc) and linted by oxlint. The
 `typescript` package is not used.
 
-You need Node.js 24 or newer, Rust (stable), and on Linux the WebKitGTK 4.1
-development files:
-
-```bash
-# Arch
-sudo pacman -S --needed webkit2gtk-4.1 base-devel
-# Debian, Ubuntu
-sudo apt install libwebkit2gtk-4.1-dev build-essential libssl-dev librsvg2-dev libxdo-dev
-```
-
 ```bash
 npm install
 npm run tauri dev                    # the app, reloading as you edit
@@ -89,8 +106,7 @@ npm run tauri build -- --no-bundle   # src-tauri/target/release/kalendarix
 npm run tauri build                  # installers for this platform
 ```
 
-At run time it needs `webkit2gtk-4.1` and nothing else. An Arch package recipe
-is in [packaging/arch](packaging/arch).
+An Arch package recipe is in [packaging/arch](packaging/arch).
 
 ### Working on the interface alone
 
@@ -102,12 +118,13 @@ Outside the app the interface runs against a stand-in backend (localStorage and
 sample calendars), so nothing of the above has to be built. `?theme=pixel`
 shows the pixel look, `?actual` the tracked-activity lane, `?demo=0` starts empty.
 
-### Checks
+## Tests
 
 ```bash
 npm run check                 # types, lint, unit tests
 npm run e2e                   # the interface in a real browser (needs npm run dev)
 KX_BROWSER=webkit npm run e2e # the same in WebKit, the engine the app runs on under Linux
+npm run a11y                  # accessibility: axe-core and a keyboard-only walk (needs npm run dev)
 cd src-tauri && cargo test && cargo clippy --all-targets -- -D warnings
 ```
 
@@ -117,6 +134,12 @@ TypeScript file that Node runs as it is.
 tsc-rs is young, so `package.json` names one exact version of it. Its install
 script is declined there (`allowScripts`): it only makes the command start a
 little faster.
+
+## Accessibility
+
+Kalendarix aims at WCAG 2.2 Level AA. It is checked automatically and with the
+keyboard, and the known problems, what has not been tested, and how to report a
+barrier are in [ACCESSIBILITY.md](ACCESSIBILITY.md).
 
 ## Where things are
 
@@ -134,7 +157,7 @@ gammu/          scripts that push an exported file to a phone
 
 ## Files
 
-| | |
+| File | What it holds |
 |---|---|
 | `~/.config/kalendarix/calendars.json` | calendars and events |
 | `~/.config/kalendarix/settings.json` | language, look, last choices |

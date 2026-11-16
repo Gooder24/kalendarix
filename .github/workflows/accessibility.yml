@@ -1,0 +1,38 @@
+name: Accessibility
+
+# The documentation check, and the interface checked with axe-core and the keyboard.
+# A new problem fails the job; the known ones are in .github/a11y-baseline.json and
+# .github/a11y-axe-baseline.json.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a11y-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  accessibility:
+    name: Documentation, interface (axe-core, keyboard)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Documentation
+        run: python3 .github/scripts/check-docs.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx vite build
+      - run: npx playwright-core install --with-deps chromium
+      - name: Interface
+        run: |
+          npx vite preview --host 127.0.0.1 --port 1420 --strictPort &
+          for i in $(seq 30); do curl -sf http://127.0.0.1:1420/ > /dev/null && break; sleep 1; done
+          npm run a11y
