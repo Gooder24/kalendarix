@@ -426,7 +426,7 @@ button.mini-title:hover {
 
 .mini-dow {
   text-align: center;
-  color: var(--text-3);
+  color: var(--text-2);
   padding: 2px 0;
 }
 
@@ -444,7 +444,7 @@ button.mini-title:hover {
 }
 
 .mini-day.other {
-  color: var(--text-3);
+  color: var(--text-2);
 }
 
 .mini-day.today {
@@ -621,7 +621,7 @@ button.mini-title:hover {
 }
 
 .cell.other {
-  color: var(--text-3);
+  color: var(--text-2);
 }
 
 .cell:hover {
@@ -646,7 +646,7 @@ button.mini-title:hover {
   position: absolute;
   left: 4px;
   top: 2px;
-  color: var(--text-3);
+  color: var(--text-2);
 }
 
 .weeknum:hover {
@@ -721,7 +721,7 @@ button.mini-title:hover {
 }
 
 .tg-gutter {
-  color: var(--text-3);
+  color: var(--text-2);
   text-align: right;
   padding-right: 6px;
   white-space: nowrap;
@@ -1012,7 +1012,7 @@ button.mini-title:hover {
 }
 
 .card-calendar {
-  color: var(--text-3);
+  color: var(--text-2);
 }
 
 .tag-err {
