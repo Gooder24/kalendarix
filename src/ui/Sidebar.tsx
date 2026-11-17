@@ -38,7 +38,7 @@ function CalendarRow({ calendar }: { calendar: StoredCalendar }) {
 
 export function Sidebar() {
   return (
-    <aside class="sidebar">
+    <aside class="sidebar" aria-label={t('calendars')}>
       <MiniMonth
         month={cursor.value}
         selected={dayNumber(cursor.value)}
@@ -46,7 +46,7 @@ export function Sidebar() {
         onMonth={(month) => (cursor.value = month.getTime())}
         onTitle={() => show('month')}
       />
-      <h3 class="sidebar-title">{t('calendars')}</h3>
+      <h2 class="sidebar-title">{t('calendars')}</h2>
       <ul class="cal-list">
         {doc.value.calendars.map((calendar) => (
           <CalendarRow key={calendar.id} calendar={calendar} />

@@ -106,11 +106,11 @@ export function Dialog(props: { title: string; onClose: () => void; children: Co
 
 export function DialogHead(props: { title: string; onClose: () => void; children?: ComponentChildren }) {
   return (
-    <header class="dialog-head">
+    <div class="dialog-head">
       <h2>{props.title}</h2>
       {props.children}
       <Button icon="close" title={t('close')} kind="ghost" onClick={props.onClose} />
-    </header>
+    </div>
   );
 }
 

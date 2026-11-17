@@ -32,7 +32,7 @@ function marksFor(month: number): Map<number, string[]> {
 export function Popup() {
   const [day, setDay] = useState(() => startOfDay(Date.now()).getTime());
   const [month, setMonth] = useState(day);
-  const root = useRef<HTMLDivElement>(null);
+  const root = useRef<HTMLElement>(null);
 
   // Every time it is shown it starts on today, whatever was left open.
   useEffect(
@@ -68,7 +68,8 @@ export function Popup() {
   const list = blocksOn(day);
   const date = longDate(lang.value, day);
   return (
-    <div class="popup" ref={root}>
+    <main class="popup" ref={root}>
+      <h1 class="sr-only">Kalendarix</h1>
       <MiniMonth
         month={month}
         selected={dayNumber(day)}
@@ -91,6 +92,6 @@ export function Popup() {
         <Button icon="external" label={t('openInApp')} onClick={() => void backend.showMain(ymd(day))} />
       </footer>
       {detail.value && <EventDetail key={detail.value.key} block={detail.value} openInApp />}
-    </div>
+    </main>
   );
 }
