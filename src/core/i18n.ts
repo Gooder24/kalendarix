@@ -6,7 +6,7 @@ import type { Lang } from './types';
 
 const sk = {
   today: 'Dnes', year: 'Rok', month: 'Mesiac', week: 'Týždeň', day: 'Deň',
-  previous: 'Späť', next: 'Ďalej', search: 'Hľadať', settings: 'Nastavenia', sidebar: 'Bočný panel',
+  previous: 'Späť', next: 'Ďalej', search: 'Hľadať', searchResults: 'Výsledky vyhľadávania', settings: 'Nastavenia', sidebar: 'Bočný panel',
   calendars: 'Kalendáre', newCalendar: 'Nový kalendár', newEvent: 'Nová udalosť', editEvent: 'Upraviť udalosť',
   editCalendar: 'Upraviť kalendár', allDay: 'Celý deň', repeat: 'Opakovanie', location: 'Miesto', notes: 'Poznámky',
   alarm: 'Pripomienka', save: 'Uložiť', cancel: 'Zrušiť', delete: 'Vymazať', edit: 'Upraviť', close: 'Zavrieť',
@@ -55,7 +55,7 @@ type Key = keyof typeof sk;
 
 const en: Record<Key, string> = {
   today: 'Today', year: 'Year', month: 'Month', week: 'Week', day: 'Day',
-  previous: 'Back', next: 'Forward', search: 'Search', settings: 'Settings', sidebar: 'Sidebar',
+  previous: 'Back', next: 'Forward', search: 'Search', searchResults: 'Search results', settings: 'Settings', sidebar: 'Sidebar',
   calendars: 'Calendars', newCalendar: 'New calendar', newEvent: 'New event', editEvent: 'Edit event',
   editCalendar: 'Edit calendar', allDay: 'All day', repeat: 'Repeat', location: 'Location', notes: 'Notes',
   alarm: 'Reminder', save: 'Save', cancel: 'Cancel', delete: 'Delete', edit: 'Edit', close: 'Close',

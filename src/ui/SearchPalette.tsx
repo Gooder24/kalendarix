@@ -52,10 +52,10 @@ export function SearchPalette() {
           }
         }}
       />
-      <ul class="search-results" role="listbox">
+      <ul class="search-results" role="listbox" aria-label={t('searchResults')}>
         {results.map((inst, i) => (
-          <li key={inst.key} role="option" aria-selected={i === picked}>
-            <button type="button" class={i === picked ? 'picked' : ''} style={paint(inst)} onClick={() => go(inst)} onMouseEnter={() => setPicked(i)}>
+          <li key={inst.key} role="presentation">
+            <button type="button" role="option" aria-selected={i === picked} class={i === picked ? 'picked' : ''} style={paint(inst)} onClick={() => go(inst)} onMouseEnter={() => setPicked(i)}>
               <span class="card-colors" aria-hidden="true" />
               <span class="search-title">{splitCancelled(inst.event.title).title || t('untitled')}</span>
               <span class="search-meta">
@@ -65,7 +65,7 @@ export function SearchPalette() {
             </button>
           </li>
         ))}
-        {query.trim() && !results.length && <li class="search-none">{t('noEvents')}</li>}
+        {query.trim() && !results.length && <li class="search-none" role="presentation">{t('noEvents')}</li>}
       </ul>
     </Dialog>
   );
