@@ -28,11 +28,16 @@ Thanks for helping out. A few ground rules keep the codebase small and clear.
   Identifiers and comments are English.
 - Match the surrounding code's naming, comment density and idioms.
 
+## Accessibility
+
+Interface changes must work with the keyboard and pass the checks described in
+[ACCESSIBILITY.md](ACCESSIBILITY.md). Report a barrier there too.
+
 ## Before a pull request
 
 ```bash
 npm run check
-npm run dev & npm run e2e
+npm run dev & npm run e2e && npm run a11y
 cd src-tauri && cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test
 ```
 

@@ -1,0 +1,50 @@
+name: Accessibility barrier
+description: Something is hard or impossible to use with the keyboard, a screen reader, zoom, colour or contrast.
+labels: ["accessibility"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for telling us. You do not need to say anything about a disability.
+        How reports are handled: [ACCESSIBILITY.md](https://github.com/Gooder24/kalendarix/blob/main/ACCESSIBILITY.md).
+  - type: textarea
+    id: task
+    attributes:
+      label: What were you trying to do?
+    validations:
+      required: true
+  - type: textarea
+    id: barrier
+    attributes:
+      label: What happened instead?
+      description: Describe the barrier in your own words.
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Where in the app?
+      description: For example "month view", "new event form", "small calendar".
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How much does this stop you?
+      options:
+        - "Critical: I cannot complete a core task at all"
+        - "Serious: I can complete it, but only with great difficulty or a workaround"
+        - "Moderate: an annoyance, or the experience is inconsistent"
+        - "Minor: little effect on how I use the app"
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system, browser or desktop, Kalendarix version, and any assistive technology, with versions if you know them.
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        A screenshot or recording helps if you are comfortable sharing one. Please make sure it does not show personal calendar data.
