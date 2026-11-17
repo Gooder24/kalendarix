@@ -63,15 +63,9 @@ Accessibility is owned by the repository owner, **[Gooder24](https://github.com/
 
 ## Known problems
 
-Found by the automated check and by the keyboard walk. Each has an issue; the list is not complete, and nothing here was checked with a screen reader yet.
+The barriers tracked in [issues #1–#7](https://github.com/Gooder24/kalendarix/issues?q=is%3Aissue%20label%3Aaccessibility) have regression checks: secondary-text contrast, pointer targets, independent month-day controls, headings, landmarks, named search results, and modal focus containment and restoration. The automated suite requires zero violations of the rules involved, in both schemes, including populated search results and the small calendar.
 
-- **Some secondary text is hard to read:** days of the neighbouring months in the small calendar, and calendar names on the day view's cards ([issue #1](https://github.com/Gooder24/kalendarix/issues/1)).
-- **Small targets are hard to hit** with a mouse, a trackpad or a touch screen: event chips, the "+N" link, the week numbers ([issue #2](https://github.com/Gooder24/kalendarix/issues/2)). Workaround: `Ctrl+K` finds an event by its title and opens it.
-- **A day in the month view is one button named with its date only.** The events in it and its week number are inside that button, not separate controls ([issue #3](https://github.com/Gooder24/kalendarix/issues/3)). Workaround: `D` or Enter on a day opens the day, with its events as a list.
-- **Heading levels skip:** the sidebar title is a level-3 heading with no level 2 before it, and the small calendar has no page heading ([issue #4](https://github.com/Gooder24/kalendarix/issues/4)).
-- **Landmarks:** while a dialog is open there are two banners, the sidebar is not in a landmark, and the small calendar has no `main` ([issue #5](https://github.com/Gooder24/kalendarix/issues/5)).
-- **The search results list has no name**, so a screen reader cannot say what it is ([issue #6](https://github.com/Gooder24/kalendarix/issues/6)).
-- **Focus can leave an open dialog:** in Settings and in the search dialog, Tab moves on to the page behind it. Escape closes the dialog and gives the focus back ([issue #7](https://github.com/Gooder24/kalendarix/issues/7)).
+This is not a complete accessibility assessment. Screen readers, zoom and reflow still need the manual checks listed below.
 
 ## Supported environments
 
@@ -92,8 +86,8 @@ Not tested, so do not assume they work:
 
 | Check | What it covers | Status |
 |---|---|---|
-| Automated (axe-core) | The main states (month, week, day, year, new event, search, settings) and the small calendar, in the light and the dark scheme, default look. WCAG 2.2 A and AA plus best practice. | In CI. Known problems are in the baseline. The pixel look is not scanned yet. |
-| Keyboard only | Tab reaches every toolbar control with a visible focus; the shortcuts; creating, saving, searching, opening and closing; Enter on a day. | In CI. Core flows only. |
+| Automated (axe-core) | The main states (month, week, day, year, new event, search, settings) and the small calendar, in the light and the dark scheme, default look. WCAG 2.2 A and AA plus best practice. | In CI. Zero violations for the resolved issue rules; other rules use the baseline. The pixel look is not scanned yet. |
+| Keyboard only | Tab reaches every toolbar control with a visible focus; the shortcuts; creating, saving, searching, opening and closing; Enter on a day. | In CI. Core flows and Tab/Shift+Tab containment in Settings and search, with Escape returning focus. |
 | Documentation | Heading order, alternative text, descriptive link text in the Markdown files. | In CI, `.github/scripts/check-docs.py`. |
 | Screen reader spot check | The core flows with NVDA, VoiceOver or Orca. | Not done yet. Needs a person. |
 | Manual checks | Zoom to 200 % and reflow to 400 %, colour use beyond what axe finds, plain language in the interface texts. | Not done yet. Needs a person. |

@@ -1,7 +1,7 @@
 // Small pieces every part of the interface uses.
 
 import type { CSSProperties, ComponentChildren } from 'preact';
-import { useEffect, useLayoutEffect, useRef } from 'preact/hooks';
+import { useLayoutEffect, useRef } from 'preact/hooks';
 import { isHex, textOn } from '../core/colors';
 import { hm } from '../core/dates';
 import { splitCancelled } from '../core/details';
@@ -60,7 +60,7 @@ export function Button(props: {
 /** A window over the app: Escape or a click beside it closes it. */
 export function Dialog(props: { title: string; onClose: () => void; children: ComponentChildren; class?: string; wide?: boolean }) {
   const box = useRef<HTMLDivElement>(null);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
     // The field the dialog is about, else its first field; a dialog of buttons only takes the focus itself.
     const first = box.current?.querySelector<HTMLElement>('[data-focus]') ?? box.current?.querySelector<HTMLElement>('input, select, textarea');
@@ -75,6 +75,18 @@ export function Dialog(props: { title: string; onClose: () => void; children: Co
   close.current = props.onClose;
   useLayoutEffect(() => {
     const onKey = (e: KeyboardEvent): void => {
+      if (e.key === 'Tab' && box.current) {
+        const controls = [...box.current.querySelectorAll<HTMLElement>('button, input, select, textarea, a[href], [tabindex]')]
+          .filter((el) => el.tabIndex >= 0 && !el.matches(':disabled') && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden');
+        const first = controls[0] ?? box.current;
+        const last = controls.at(-1) ?? box.current;
+        if (!box.current.contains(document.activeElement) || document.activeElement === box.current ||
+          (e.shiftKey ? document.activeElement === first : document.activeElement === last)) {
+          e.preventDefault();
+          (e.shiftKey ? last : first).focus();
+        }
+        return;
+      }
       if (e.key !== 'Escape') return;
       e.stopPropagation();
       close.current();

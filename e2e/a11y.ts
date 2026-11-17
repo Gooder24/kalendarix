@@ -31,11 +31,11 @@ interface Session { page: Page; context: BrowserContext; errors: string[]; leaks
 
 const results: string[] = [];
 let failures = 0;
-const browser = await chromium.launch({ executablePath: process.env.CHROMIUM || undefined, args: ['--no-sandbox', '--disable-gpu'] });
+const browser = await chromium.launch({ executablePath: process.env.CHROMIUM || '/usr/bin/chromium', args: ['--no-sandbox', '--disable-gpu'] });
 
 /** A fresh browser context on a page of the app, with everything outside the local server refused. */
 async function open(path: string, ready: string, scheme: 'dark' | 'light'): Promise<Session> {
-  const context = await browser.newContext({ viewport: SIZE, timezoneId: 'Europe/Bratislava', locale: 'sk-SK', deviceScaleFactor: 1, colorScheme: scheme });
+  const context = await browser.newContext({ viewport: path === 'popup.html' ? { width: 360, height: 650 } : SIZE, timezoneId: 'Europe/Bratislava', locale: 'sk-SK', deviceScaleFactor: 1, colorScheme: scheme });
   const leaks: string[] = [];
   await context.route('**/*', (route) => {
     if (new URL(route.request().url()).origin === ORIGIN) return route.continue();
@@ -113,6 +113,7 @@ const STATES: { name: string; open: (page: Page) => Promise<void> }[] = [
   { name: 'year', open: async (p) => { await p.keyboard.press('y'); await p.waitForSelector('.year'); } },
   { name: 'new event', open: async (p) => { await p.keyboard.press('m'); await p.keyboard.press('n'); await p.waitForSelector('.dialog.form'); } },
   { name: 'search', open: async (p) => { await p.keyboard.press('Control+k'); await p.waitForSelector('.search-input'); } },
+  { name: 'search results', open: async (p) => { await p.keyboard.press('Control+k'); await p.waitForSelector('.search-input'); await p.locator('.search-input').fill('pisomka'); await p.waitForSelector('.search-results button'); } },
   { name: 'settings', open: async (p) => { await p.locator('button[aria-label="Nastavenia"]').click(); await p.waitForSelector('.own-category'); } },
 ];
 
@@ -136,6 +137,8 @@ async function scan(page: Page, state: string): Promise<void> {
 for (const scheme of ['dark', 'light'] as const) {
   await session(`axe, ${scheme} scheme: ${STATES.length} states`, 'index.html', '.toolbar', async (s) => {
     for (const state of STATES) {
+      await s.page.keyboard.press('m');
+      await s.page.waitForSelector('.month');
       await state.open(s.page);
       await scan(s.page, `${scheme} ${state.name}`);
       if ((await s.page.locator('.overlay').count()) > 0) await s.page.keyboard.press('Escape');
@@ -143,9 +146,9 @@ for (const scheme of ['dark', 'light'] as const) {
     }
   }, scheme);
 }
-await session('axe, popup (small calendar)', 'popup.html', '.popup', async (s) => {
-  await scan(s.page, 'popup');
-});
+for (const scheme of ['dark', 'light'] as const) await session(`axe, ${scheme} popup (small calendar)`, 'popup.html', '.popup', async (s) => {
+  await scan(s.page, `${scheme} popup`);
+}, scheme);
 
 const known: Record<string, number> = existsSync(BASELINE) ? JSON.parse(readFileSync(BASELINE, 'utf8')) : {};
 const counts = Object.fromEntries([...problems.keys()].sort().map((k) => [k, problems.get(k)!.targets.length]));
@@ -158,7 +161,8 @@ if (process.argv.includes('--update-baseline')) {
     results.push(`baseline: ${total(counts)} known axe problem(s) in ${Object.keys(counts).length} state/rule pair(s) written to .github/a11y-axe-baseline.json`);
   }
 } else {
-  const worse = Object.keys(counts).filter((k) => counts[k] > (known[k] ?? 0));
+  const fixedRules = new Set(['color-contrast', 'target-size', 'nested-interactive', 'label-content-name-mismatch', 'heading-order', 'page-has-heading-one', 'landmark-no-duplicate-banner', 'landmark-unique', 'landmark-one-main', 'region', 'aria-input-field-name']);
+  const worse = Object.keys(counts).filter((k) => counts[k] > (fixedRules.has(k.split(' | ')[1]) ? 0 : (known[k] ?? 0)));
   const better = Object.keys(known).filter((k) => (counts[k] ?? 0) < known[k]);
   results.push(`axe: ${total(counts)} problem(s), baseline ${total(known)}, ${worse.length} state/rule pair(s) above the baseline` +
     (better.length ? `; ${better.length} pair(s) below it: run with --update-baseline` : ''));
@@ -238,8 +242,33 @@ await session('keyboard: settings open from the toolbar, Escape closes them and 
   await page.waitForFunction(() => document.activeElement?.getAttribute('aria-label') === 'Nastavenia');
 });
 
+// Traverse every visible control in both directions, including both boundaries.
+for (const [name, opener, ready] of [
+  ['settings', 'Nastavenia', '.own-category'],
+  ['search', 'Hľadať (Ctrl+K)', '.search-input'],
+  ['search results', 'Hľadať (Ctrl+K)', '.search-results button'],
+] as const) {
+  await session(`keyboard: ${name} traps focus and returns it to its opener`, 'index.html', '.toolbar', async ({ page }) => {
+    await tabTo(page, 'button', opener);
+    await page.keyboard.press('Enter');
+    if (name === 'search results') await page.locator('.search-input').fill('pisomka');
+    await page.waitForSelector(ready);
+    await page.waitForFunction(() => !!document.activeElement?.closest('.dialog'));
+    const count = await page.locator('.dialog button, .dialog input, .dialog select, .dialog textarea').count();
+    for (const key of ['Tab', 'Shift+Tab']) {
+      for (let i = 0; i < count + 2; i++) {
+        await page.keyboard.press(key);
+        check(await page.evaluate(() => !!document.activeElement?.closest('.dialog')), `${key} left the ${name} dialog at step ${i + 1}`);
+      }
+    }
+    await page.keyboard.press('Escape');
+    await page.waitForSelector('.overlay', { state: 'detached' });
+    await page.waitForFunction((label) => document.activeElement?.getAttribute('aria-label') === label, opener);
+  });
+}
+
 await session('keyboard: a day is opened from the month grid with Enter', 'index.html', '.toolbar', async ({ page }) => {
-  await tabTo(page, '.cell[role="button"]', '14. októbra');
+  await tabTo(page, '.cell-day', '14. októbra');
   await page.keyboard.press('Enter');
   await page.waitForSelector('.dayview');
   check((await page.locator('.toolbar-title').innerText()).includes('14. októbra 2026'), 'the day that was focused is shown');
