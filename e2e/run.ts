@@ -111,7 +111,7 @@ await scenario('month', { query: PIXEL }, async ({ page, shot }) => {
 
   // Bars sit on the same line across the days they cover (they used to be loose labels).
   const tops = await page.locator('.week').nth(3).locator('.chip').evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().top)));
-  const lane = 18;
+  const lane = 26;
   check(tops.every((t) => (t - tops[0]) % lane === 0), `chips are not on a common grid of lines: ${tops}`);
 
   // A school day is one line, not six.

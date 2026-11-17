@@ -1893,3 +1893,10 @@ code {
     display: none;
   }
 }
+
+.weeknum,
+.cell-add {
+  z-index: 1;
+  min-width: 24px;
+  min-height: 24px;
+}

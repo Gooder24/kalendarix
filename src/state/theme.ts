@@ -113,8 +113,8 @@ export interface Metrics {
 export function themeMetrics(theme: Theme): Metrics {
   const line = Math.round(theme.size * (theme.pixel ? 14 / 11 : 1.45));
   return theme.pixel
-    ? { hour: theme.size * 4, lane: theme.size + 7, cellHead: theme.size + 9, line }
-    : { hour: 48, lane: theme.size + 9, cellHead: theme.size + 13, line };
+    ? { hour: theme.size * 4, lane: Math.max(26, theme.size + 7), cellHead: theme.size + 9, line }
+    : { hour: 48, lane: Math.max(26, theme.size + 9), cellHead: theme.size + 13, line };
 }
 
 /** The CSS variables a theme stands for. */
