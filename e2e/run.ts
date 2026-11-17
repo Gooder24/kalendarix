@@ -131,7 +131,7 @@ await scenario('month', { query: PIXEL }, async ({ page, shot }) => {
 // --- clicking a day opens that day, not a form -----------------------------------
 
 await scenario('day-from-month', { query: PIXEL }, async ({ page, shot }) => {
-  await page.locator('.cell', { has: page.locator('.num', { hasText: /^14$/ }) }).click();
+  await page.locator('.cell-day', { has: page.locator('.num', { hasText: /^14$/ }) }).locator('.num').click();
   await page.waitForSelector('.dayview');
   await shot('');
   check((await page.locator('.dialog').count()) === 0, 'no dialog opens on a click on a day');

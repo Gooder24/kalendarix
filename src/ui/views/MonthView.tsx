@@ -53,16 +53,6 @@ export function MonthView() {
                   <div
                     key={day}
                     class={classes.filter(Boolean).join(' ')}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={date.toLocaleDateString(lang.value === 'en' ? 'en-GB' : 'sk-SK', { weekday: 'long', day: 'numeric', month: 'long' })}
-                    onClick={() => show('day', date)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        show('day', date);
-                      }
-                    }}
                     onDragOver={(e) => {
                       if (dragging()) e.preventDefault();
                     }}
@@ -72,6 +62,14 @@ export function MonthView() {
                       dropOn(day, null);
                     }}
                   >
+                    <button
+                      type="button"
+                      class="cell-day"
+                      aria-label={date.toLocaleDateString(lang.value === 'en' ? 'en-GB' : 'sk-SK', { weekday: 'long', day: 'numeric', month: 'long' })}
+                      onClick={() => show('day', date)}
+                    >
+                      <span class="num">{date.getDate()}</span>
+                    </button>
                     {d === 0 && (
                       <button
                         type="button"
@@ -96,7 +94,6 @@ export function MonthView() {
                     >
                       <Icon name="plus" />
                     </button>
-                    <span class="num">{date.getDate()}</span>
                   </div>
                 );
               })}

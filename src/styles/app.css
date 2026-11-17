@@ -1900,3 +1900,16 @@ code {
   min-width: 24px;
   min-height: 24px;
 }
+
+/* The day action is a sibling of its week number and add action. */
+.cell-day {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 2px 4px;
+  text-align: right;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
