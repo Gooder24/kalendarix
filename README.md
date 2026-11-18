@@ -166,8 +166,9 @@ gammu/          scripts that push an exported file to a phone
 
 ## License & brand
 
-Source code: [MIT](LICENSE). The **Kalendarix name, logo, and brand are
-reserved**; see [BRANDING.md](BRANDING.md). Forks must rebrand.
+Source code: [MIT](LICENSE). The MIT license covers the source code only, not the **Kalendarix name, logo,
+wordmark and tagline**; see [BRANDING.md](BRANDING.md). A changed version you share must not pass itself off as
+Kalendarix: give it your own name and logo. Premium theme packs distributed separately are not part of this source.
 
 ---
 
