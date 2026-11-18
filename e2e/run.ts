@@ -128,6 +128,31 @@ await scenario('month', { query: PIXEL }, async ({ page, shot }) => {
   await shot('november');
 });
 
+// Visible day header actions must never cover dates or event targets.
+for (const width of [320, 683, 1366]) {
+  await scenario(`month-targets-${width}`, { query: PIXEL, size: { width, height: 728 } }, async ({ page, shot }) => {
+    const monday = page.locator('.cell').filter({ has: page.locator('.num', { hasText: /^12$/ }) });
+    await monday.locator('.num').hover();
+    const overlaps = await monday.evaluate((cell) => {
+      const date = cell.querySelector('.num')!.getBoundingClientRect();
+      return [...cell.querySelectorAll<HTMLElement>('.weeknum, .cell-add')].filter(el => el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden').some(el => {
+        const r = el.getBoundingClientRect();
+        return r.bottom > cell.getBoundingClientRect().top + parseFloat(getComputedStyle(cell).getPropertyValue('--cell-head')) + 1 ||
+          (r.left < date.right && r.right > date.left && r.top < date.bottom && r.bottom > date.top);
+      });
+    });
+    check(!overlaps, 'header controls cover a date or first event lane');
+    const chip = page.locator('.week').filter({ has: monday }).locator('.chip').first();
+    check(await chip.evaluate(el => {
+      const r = el.getBoundingClientRect();
+      return [3, r.width / 2, r.width - 3].every(x => el.contains(document.elementFromPoint(r.left + x, r.top + 2)));
+    }), 'another control intercepts the first event chip');
+    await shot('');
+    await monday.locator('.num').click();
+    await page.waitForSelector('.dayview');
+  });
+}
+
 // --- clicking a day opens that day, not a form -----------------------------------
 
 await scenario('day-from-month', { query: PIXEL }, async ({ page, shot }) => {

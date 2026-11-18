@@ -604,6 +604,7 @@ button.mini-title:hover {
 }
 
 .cell {
+  container-type: inline-size;
   position: relative;
   min-width: 0;
   border-left: var(--bw) solid var(--line);
@@ -1923,4 +1924,13 @@ code {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+/* Keep optional header actions away from the date in narrow day columns. */
+@container (max-width: 89px) {
+  .cell-add { display: none; }
+}
+
+@container (max-width: 59px) {
+  .weeknum { display: none; }
 }

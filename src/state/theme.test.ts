@@ -16,7 +16,7 @@ describe('the desktop palette', () => {
     // A bitmap font is only sharp at multiples of its grid.
     expect([vars['--fs'], vars['--fs-2'], vars['--fs-3']]).toEqual(['11px', '22px', '44px']);
     expect(vars['--lh']).toBe('14px');
-    expect(themeMetrics(theme)).toEqual({ hour: 44, lane: 26, cellHead: 20, line: 14 });
+    expect(themeMetrics(theme)).toEqual({ hour: 44, lane: 26, cellHead: 26, line: 14 });
   });
 
   it('keeps text readable on the accent', () => {
