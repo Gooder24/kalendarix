@@ -30,6 +30,7 @@ function onKey(e: KeyboardEvent): void {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
     e.preventDefault();
     closeDialogs();
+    actualDetail.value = null;
     searchOpen.value = true;
     return;
   }

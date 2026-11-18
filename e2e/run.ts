@@ -153,6 +153,22 @@ for (const width of [320, 683, 1366]) {
   });
 }
 
+await scenario('search-replaces-activity-dialog', { query: '?actual' }, async ({ page }) => {
+  await page.keyboard.press('w');
+  await page.getByRole('button', { name: 'Skutočnosť', exact: true }).click();
+  await page.locator('.actual').first().click();
+  await page.waitForSelector('.dialog.detail');
+  await page.keyboard.press('Control+k');
+  await page.waitForSelector('.dialog.search');
+  check(await page.locator('.dialog').count() === 1, 'activity detail was not closed before search');
+  await page.keyboard.press('Shift+Tab');
+  await page.keyboard.press('Tab');
+  check(await page.evaluate(() => !!document.activeElement?.closest('.dialog.search')), 'focus left topmost search');
+  await page.keyboard.press('Escape');
+  await page.waitForSelector('.dialog.search', { state: 'detached' });
+  await page.waitForSelector('.overlay', { state: 'detached' });
+});
+
 // --- clicking a day opens that day, not a form -----------------------------------
 
 await scenario('day-from-month', { query: PIXEL }, async ({ page, shot }) => {
