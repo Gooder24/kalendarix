@@ -1927,10 +1927,10 @@ code {
 }
 
 /* Keep optional header actions away from the date in narrow day columns. */
-@container (max-width: 89px) {
+@container (max-width: calc(2em + 70px)) {
   .cell-add { display: none; }
 }
 
-@container (max-width: 59px) {
+@container (max-width: calc(4em + 24px)) {
   .weeknum { display: none; }
 }

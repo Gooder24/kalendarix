@@ -48,6 +48,7 @@ interface Options {
   /** Selector that says the page is up. */
   ready?: string;
   scheme?: 'dark' | 'light';
+  fontSize?: number;
 }
 
 interface Stage {
@@ -73,6 +74,14 @@ async function scenario(name: string, options: Options, body: (stage: Stage) => 
     colorScheme: options.scheme ?? 'dark',
   });
   const page = await context.newPage();
+  if (options.fontSize) {
+    // Exercise the supported desktop palette sizes through the demo backend.
+    await page.route(/(?:demo.*\.js|\/src\/platform\/demo\.ts)(?:\?.*)?$/, async (route) => {
+      const response = await route.fetch();
+      const body = (await response.text()).replace(/font_size:\s*["']11["']/, `font_size: '${options.fontSize}'`);
+      await route.fulfill({ response, body });
+    });
+  }
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
@@ -129,8 +138,9 @@ await scenario('month', { query: PIXEL }, async ({ page, shot }) => {
 });
 
 // Visible day header actions must never cover dates or event targets.
-for (const width of [320, 683, 1366]) {
-  await scenario(`month-targets-${width}`, { query: PIXEL, size: { width, height: 728 } }, async ({ page, shot }) => {
+for (const [width, fontSize] of [[320, 11], [683, 11], [1366, 11], [476, 24], [686, 24]] as const) {
+  await scenario(`month-targets-${width}-${fontSize}`, { query: PIXEL, size: { width, height: 728 }, fontSize }, async ({ page, shot }) => {
+    check(await page.locator('.num').first().evaluate(el => getComputedStyle(el).fontSize) === `${fontSize}px`, 'desktop palette font size was not applied');
     const monday = page.locator('.cell').filter({ has: page.locator('.num', { hasText: /^12$/ }) });
     await monday.locator('.num').hover();
     const overlaps = await monday.evaluate((cell) => {
