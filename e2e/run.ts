@@ -49,6 +49,7 @@ interface Options {
   ready?: string;
   scheme?: 'dark' | 'light';
   fontSize?: number;
+  pixel?: boolean;
 }
 
 interface Stage {
@@ -78,7 +79,8 @@ async function scenario(name: string, options: Options, body: (stage: Stage) => 
     // Exercise the supported desktop palette sizes through the demo backend.
     await page.route(/(?:demo.*\.js|\/src\/platform\/demo\.ts)(?:\?.*)?$/, async (route) => {
       const response = await route.fetch();
-      const body = (await response.text()).replace(/font_size:\s*["']11["']/, `font_size: '${options.fontSize}'`);
+      let body = (await response.text()).replace(/font_size:\s*["']11["']/, `font_size: '${options.fontSize}'`);
+      if (options.pixel === false) body = body.replace(/font:\s*["']Departure Mono Pixel["']/, "font: 'sans-serif'").replace(/icons:\s*["']pixel-2000["']/, "icons: 'smooth'");
       await route.fulfill({ response, body });
     });
   }
@@ -138,9 +140,10 @@ await scenario('month', { query: PIXEL }, async ({ page, shot }) => {
 });
 
 // Visible day header actions must never cover dates or event targets.
-for (const [width, fontSize] of [[320, 11], [683, 11], [1366, 11], [476, 24], [686, 24]] as const) {
-  await scenario(`month-targets-${width}-${fontSize}`, { query: PIXEL, size: { width, height: 728 }, fontSize }, async ({ page, shot }) => {
+for (const [width, fontSize, pixel] of [[320, 11, true], [683, 11, true], [1366, 11, true], [476, 24, true], [686, 24, true], [1366, 8, false], [1366, 11, false], [1366, 12, false]] as const) {
+  await scenario(`month-targets-${width}-${fontSize}-${pixel ? 'pixel' : 'smooth'}`, { query: PIXEL, size: { width, height: 728 }, fontSize, pixel }, async ({ page, shot }) => {
     check(await page.locator('.num').first().evaluate(el => getComputedStyle(el).fontSize) === `${fontSize}px`, 'desktop palette font size was not applied');
+    check(await page.locator('html').getAttribute('data-look') === (pixel ? 'pixel' : 'smooth'), 'palette look was not applied');
     const monday = page.locator('.cell').filter({ has: page.locator('.num', { hasText: /^12$/ }) });
     await monday.locator('.num').hover();
     const overlaps = await monday.evaluate((cell) => {
