@@ -31,7 +31,7 @@ interface Session { page: Page; context: BrowserContext; errors: string[]; leaks
 
 const results: string[] = [];
 let failures = 0;
-const browser = await chromium.launch({ executablePath: process.env.CHROMIUM || '/usr/bin/chromium', args: ['--no-sandbox', '--disable-gpu'] });
+const browser = await chromium.launch({ executablePath: process.env.CHROMIUM || undefined, args: ['--no-sandbox', '--disable-gpu'] });
 
 /** A fresh browser context on a page of the app, with everything outside the local server refused. */
 async function open(path: string, ready: string, scheme: 'dark' | 'light'): Promise<Session> {
