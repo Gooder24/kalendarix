@@ -116,7 +116,8 @@ npm run dev      # http://127.0.0.1:1420 in any browser
 
 Outside the app the interface runs against a stand-in backend (localStorage and
 sample calendars), so nothing of the above has to be built. `?theme=pixel`
-shows the pixel look, `?actual` the tracked-activity lane, `?demo=0` starts empty.
+shows the pixel look (`&size=24` sets its font size, `&look=smooth` swaps the pixel font and
+icons for smooth ones), `?actual` the tracked-activity lane, `?demo=0` starts empty.
 
 ## Tests
 

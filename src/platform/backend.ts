@@ -173,8 +173,19 @@ function standIn(): Backend {
       return 'localStorage';
     },
     async getTheme() {
-      const theme = new URLSearchParams(location.search).get('theme');
-      return theme === 'pixel' ? (await import('./demo')).PIXEL_PALETTE : null;
+      const query = new URLSearchParams(location.search);
+      if (query.get('theme') !== 'pixel') return null;
+      const { PIXEL_PALETTE } = await import('./demo');
+      const size = query.get('size');
+      const smooth = query.get('look') === 'smooth';
+      return {
+        ...PIXEL_PALETTE,
+        values: {
+          ...PIXEL_PALETTE.values,
+          ...(size && { font_size: size }),
+          ...(smooth && { font: 'sans-serif', icons: 'smooth' }),
+        },
+      };
     },
     async setPixelText() {},
     async getActualRange(from, to) {
