@@ -1,9 +1,18 @@
 name: CI
 
+# A push or PR that changes only documentation starts no run.
 on:
   pull_request:
+    paths-ignore:
+      - "**.md"
+      - LICENSE
+      - docs/**
   push:
     branches: [main]
+    paths-ignore:
+      - "**.md"
+      - LICENSE
+      - docs/**
 
 concurrency:
   group: ci-${{ github.ref }}
