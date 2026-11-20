@@ -19,7 +19,9 @@ concurrency:
 jobs:
   accessibility:
     name: Documentation, interface (axe-core, keyboard)
-    runs-on: ubuntu-24.04
+    # Karchi's own pushes and PRs run on asus (github/asus-runner.sh in Karchi-skills.md);
+    # a pull request from a fork runs on GitHub's machines.
+    runs-on: ${{ github.event.pull_request && github.event.pull_request.head.repo.full_name != github.repository && 'ubuntu-24.04' || 'asus' }}
     steps:
       - uses: actions/checkout@v4
       - name: Documentation
@@ -30,7 +32,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx vite build
-      - run: npx playwright-core install --with-deps chromium
+      - run: npx playwright-core install ${{ runner.environment == 'github-hosted' && '--with-deps' || '' }} chromium
       - name: Interface
         run: |
           npx vite preview --host 127.0.0.1 --port 1420 --strictPort &
